@@ -18,7 +18,7 @@ public class MainEngine {
 
     private FileManager fm;
 
-    public MainEngine() throws FileNotFoundException, IOException {
+    public MainEngine() throws IOException {
         fm = new FileManager();
         
     }
