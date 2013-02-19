@@ -4,8 +4,12 @@
  */
 package UI;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -13,7 +17,7 @@ import javax.swing.JLabel;
  */
 public class MainView extends JFrame {
 
-    private JLabel main;
+    private JPanel main;
 
     public MainView() {
         init();
@@ -31,8 +35,25 @@ public class MainView extends JFrame {
     private void init() {
     }
 
-    private JLabel getBorderLayout() {
-        JLabel l = new JLabel();
+    private JPanel getBorderLayout() {
+        JPanel l = new JPanel();
+        l.setLayout(new BorderLayout());
+        
+        l.add(new QueryPanel(), BorderLayout.NORTH);
+        l.add(new JButton("Close"), BorderLayout.SOUTH);
+        l.add(getEastLayout(), BorderLayout.EAST);
+        l.add(new ResultsPanel(), BorderLayout.WEST);
+        
+        
+        return l;
+    }
+
+    private JPanel getEastLayout() {
+        JPanel l = new JPanel();
+        l.setLayout(new GridLayout(3, 1));
+        l.add(new TypePanel());
+        l.add(new StylePanel());
+        l.add(new LimitPanel());
         return l;
     }
 }

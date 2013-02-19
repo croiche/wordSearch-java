@@ -29,6 +29,8 @@ public class StylePanel extends javax.swing.JPanel {
         cbtnOp1 = new javax.swing.JCheckBox();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Style", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
+        setPreferredSize(new java.awt.Dimension(150, 70));
+        setRequestFocusEnabled(false);
 
         cbtnOp1.setText("Case sensitive");
 
