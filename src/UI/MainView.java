@@ -95,12 +95,6 @@ public class MainView extends JFrame {
     }
 
     private void init() {
-        //////////  LABELS  //////////
-        lblSearch = new javax.swing.JLabel("Search:");
-        lblResults = new javax.swing.JLabel("Results");
-        lblCount = new javax.swing.JLabel("Count: 0");
-        //////////////////////////////
-
         ///////  TEXT FIELDS  ///////
         txtQuery = new javax.swing.JTextField();
         searchBarSize = new Dimension(260, 25);
@@ -149,6 +143,12 @@ public class MainView extends JFrame {
         cbbxLimits = new javax.swing.JComboBox();
         cbbxLimits.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"None", "50", "100", "250", "500"}));
         ////////////////////////////
+
+        //////////  LABELS  //////////
+        lblSearch = new javax.swing.JLabel("Search:");
+        lblResults = new javax.swing.JLabel("Results");
+        lblCount = new javax.swing.JLabel("Count: " + lstResults.getModel().getSize());
+        //////////////////////////////
     }
 
     private JPanel getBorderLayout() {
@@ -227,6 +227,7 @@ public class MainView extends JFrame {
     private void clear() {
         lstResults.setModel(new javax.swing.DefaultListModel());
         txtQuery.setText("");
+        lblCount.setText("Count: " + lstResults.getModel().getSize());
     }
 
     private IAccept getSearchType() {
@@ -247,9 +248,10 @@ public class MainView extends JFrame {
 
     private void showResults(ArrayList<String> search) {
         DefaultListModel model = new DefaultListModel();
-        for (String a : search){
+        for (String a : search) {
             model.addElement(a);
         }
         lstResults.setModel(model);
+        lblCount.setText("Count: " + model.getSize());
     }
 }
