@@ -26,7 +26,7 @@ public class MainView extends JFrame {
 
     private JPanel main;
     private MainEngine me;
-    private javax.swing.JButton btnStart, btnClose, btnClear;
+    private javax.swing.JButton btnSearch, btnClose, btnClear;
     private javax.swing.JLabel lblSearch, lblResults, lblCount;
     private javax.swing.JTextField txtQuery;
     private javax.swing.JScrollPane scpList;
@@ -39,7 +39,7 @@ public class MainView extends JFrame {
     private ActionListener buttonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource().equals(btnStart)) {
+            if (e.getSource().equals(btnSearch)) {
                 try {
                     me = new MainEngine();
                     // Start the search query
@@ -103,13 +103,13 @@ public class MainView extends JFrame {
 
         /////////  BUTTONS  /////////
         buttonSize = new Dimension(75, 25);
-        btnStart = new javax.swing.JButton("Start");
+        btnSearch = new javax.swing.JButton("Search");
         btnClear = new javax.swing.JButton("Clear");
         btnClose = new javax.swing.JButton("Close");
-        btnStart.setPreferredSize(buttonSize);
+        btnSearch.setPreferredSize(buttonSize);
         btnClear.setPreferredSize(buttonSize);
         btnClose.setPreferredSize(buttonSize);
-        btnStart.addActionListener(buttonListener);
+        btnSearch.addActionListener(buttonListener);
         btnClear.addActionListener(buttonListener);
         btnClose.addActionListener(buttonListener);
         /////////////////////////////
@@ -176,7 +176,7 @@ public class MainView extends JFrame {
         l.setLayout(new FlowLayout(FlowLayout.LEFT));
         l.add(lblSearch);
         l.add(txtQuery);
-        l.add(btnStart);
+        l.add(btnSearch);
         l.add(btnClear);
         return l;
     }
