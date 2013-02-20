@@ -43,7 +43,7 @@ public class MainView extends JFrame {
                 try {
                     me = new MainEngine();
                     // Start the search query
-                    showResults(me.search(txtQuery.getText(), getSearchType()));
+                    showResults(me.search(txtQuery.getText(), getSearchType(), getCaseSensitive()));
                 } catch (java.io.IOException ex) {
                     JOptionPane.showMessageDialog(MainView.this, "Error", "File not found!", JOptionPane.ERROR_MESSAGE);
                 }
@@ -244,6 +244,15 @@ public class MainView extends JFrame {
             return new Exact();
         }
         return null;
+    }
+    
+    private boolean getCaseSensitive() {
+        if (cbtnOp1.isSelected()){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private void showResults(ArrayList<String> search) {
