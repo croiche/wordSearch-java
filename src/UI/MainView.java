@@ -43,7 +43,7 @@ public class MainView extends JFrame {
                 try {
                     me = new MainEngine();
                     // Start the search query
-                    showResults(me.search(txtQuery.getText(), getSearchType(), getCaseSensitive()));
+                    showResults(me.search(txtQuery.getText(), getSearchType(), getCaseSensitive(), getLimitation()));
                 } catch (java.io.IOException ex) {
                     JOptionPane.showMessageDialog(MainView.this, "Error", "File not found!", JOptionPane.ERROR_MESSAGE);
                 }
@@ -245,30 +245,29 @@ public class MainView extends JFrame {
         }
         return null;
     }
-    
+
     private boolean getCaseSensitive() {
-        if (cbtnOp1.isSelected()){
+        if (cbtnOp1.isSelected()) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
-    
+
     private int getLimitation() {
         if (cbbxLimits.getSelectedIndex() == 0) {
-            return 0;
+            return me.totalHitsAvailable();
         }
-        if (cbbxLimits.getSelectedIndex() == 50) {
+        if (cbbxLimits.getSelectedIndex() == 1) {
             return 50;
         }
-        if (cbbxLimits.getSelectedIndex() == 100) {
+        if (cbbxLimits.getSelectedIndex() == 2) {
             return 100;
         }
-        if (cbbxLimits.getSelectedIndex() == 250) {
+        if (cbbxLimits.getSelectedIndex() == 3) {
             return 250;
         }
-        if (cbbxLimits.getSelectedIndex() == 500) {
+        if (cbbxLimits.getSelectedIndex() == 4) {
             return 500;
         }
         return 0;
@@ -276,7 +275,7 @@ public class MainView extends JFrame {
 
     private void showResults(ArrayList<String> search) {
         DefaultListModel model = new DefaultListModel();
-        for (String a : search) { 
+        for (String a : search) {
             model.addElement(a);
         }
         lstResults.setModel(model);
