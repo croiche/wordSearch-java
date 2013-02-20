@@ -22,8 +22,8 @@ public class calls {
         StartsWith sw = new StartsWith();
         EndsWith ew = new EndsWith();
         Exact e = new Exact();
-        for (int i = 0; i < me.search("ele", con).size(); i++) {
-            st.add(me.search("ele", con).get(i));
+        for (int i = 0; i < me.search("Ardv", con, true).size(); i++) {
+            st.add(me.search("Ardv", con, true).get(i));
         }
         for (int i = 0; i < st.size(); i++) {
             System.out.println(st.get(i));

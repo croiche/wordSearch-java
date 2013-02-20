@@ -20,20 +20,24 @@ public class MainEngine {
 
     public MainEngine() throws IOException {
         fm = new FileManager();
-        
+
     }
 
-    public ArrayList<String> search(String query, IAccept ia) {
+    public ArrayList<String> search(String query, IAccept ia, boolean caseSensitive) {
         ArrayList<String> tempAL = new ArrayList<>();
-        
-        for (String a : fm.getFileData()) {
-
-            if (ia.accept(query, a)){
-            tempAL.add(a);
+        String tempHit = "";
+        for (String hit : fm.getFileData()) {
+            tempHit = hit;
+            if (!caseSensitive) {
+                if (ia.accept(query.toLowerCase(), tempHit.toLowerCase())) {
+                    tempAL.add(hit);
+                }
+            } else {
+                if (ia.accept(query, hit)) {
+                    tempAL.add(hit);
+                }
             }
         }
         return tempAL;
     }
-
-   
 }
