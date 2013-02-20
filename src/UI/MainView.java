@@ -254,10 +254,29 @@ public class MainView extends JFrame {
             return false;
         }
     }
+    
+    private int getLimitation() {
+        if (cbbxLimits.getSelectedIndex() == 0) {
+            return 0;
+        }
+        if (cbbxLimits.getSelectedIndex() == 50) {
+            return 50;
+        }
+        if (cbbxLimits.getSelectedIndex() == 100) {
+            return 100;
+        }
+        if (cbbxLimits.getSelectedIndex() == 250) {
+            return 250;
+        }
+        if (cbbxLimits.getSelectedIndex() == 500) {
+            return 500;
+        }
+        return 0;
+    }
 
     private void showResults(ArrayList<String> search) {
         DefaultListModel model = new DefaultListModel();
-        for (String a : search) {
+        for (String a : search) { 
             model.addElement(a);
         }
         lstResults.setModel(model);
