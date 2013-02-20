@@ -26,6 +26,7 @@ public class MainEngine {
     public int totalHitsAvailable() {
         return fm.getFileData().size();
     }
+    
 
     public ArrayList<String> search(String query, IAccept ia, boolean caseSensitive, int limit) {
         ArrayList<String> tempAL = new ArrayList<>();
@@ -40,7 +41,9 @@ public class MainEngine {
                 }
             } else {
                 if (ia.accept(query, hit)) {
+                    if(tempAL.size() < limit){
                     tempAL.add(hit);
+                    }
                 }
             }
         }
