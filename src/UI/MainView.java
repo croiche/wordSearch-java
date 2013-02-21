@@ -17,10 +17,12 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicOptionPaneUI;
 
@@ -110,7 +112,7 @@ public class MainView extends JFrame {
         }
         //</editor-fold>
         init();
-        this.setSize(500, 400);
+        this.setSize(430, 400);
         this.setResizable(false);
         
         this.setTitle("Word Search Tool");
@@ -143,7 +145,7 @@ public class MainView extends JFrame {
         /////////////////////////////
 
         ////// LIST COMPONENTS //////
-        listSize = new Dimension(255, 295);
+        listSize = new Dimension(260, 315);
         scpList = new javax.swing.JScrollPane();
         lstResults = new javax.swing.JList();
         scpList.setViewportView(lstResults);
@@ -178,6 +180,7 @@ public class MainView extends JFrame {
         //lblSearch = new javax.swing.JLabel("Search:");
         //lblResults = new javax.swing.JLabel("Results");
         lblCount = new javax.swing.JLabel("Count: " + lstResults.getModel().getSize());
+        lblCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         //////////////////////////////
 
         //////////  MENU  //////////
@@ -249,7 +252,9 @@ public class MainView extends JFrame {
 
     private JPanel getSouthLayout() {
         JPanel l = new JPanel();
-        l.setLayout(new BasicOptionPaneUI.ButtonAreaLayout(true, 230));
+        l.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        l.setPreferredSize(new Dimension(this.getWidth(), 16));
+        l.setLayout(new BoxLayout(l, BoxLayout.X_AXIS));
         l.add(lblCount);
         return l;
     }
