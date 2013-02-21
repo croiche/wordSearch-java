@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -46,7 +48,11 @@ public class FileChooser extends JFrame{
 
             int option = chooser.showOpenDialog(frame);
             if (option == JFileChooser.APPROVE_OPTION) {
-                me.setPath(chooser.getSelectedFile().getPath()); 
+                try { 
+                    me.setFile(chooser.getSelectedFile().getPath());
+                } catch (IOException ex) {
+                    Logger.getLogger(FileChooser.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }

@@ -50,7 +50,7 @@ public class MainEngine {
         return tempAL;
     }
     
-    public void setPath(String newPath) {
-       fm.setPath(newPath);
+    public void setFile(String newPath) throws IOException {
+       fm = new FileManager(newPath);
     }
 }

@@ -21,10 +21,15 @@ public class FileManager {
     private BufferedReader br;
     private ArrayList<String> fileData;
 
-    ;
-
-    public FileManager() throws FileNotFoundException, IOException {
+    public FileManager() throws IOException {
         file = new File("");
+        br = new BufferedReader(new FileReader(file));
+
+        addFileData();
+    }
+    
+    public FileManager(String path) throws IOException {
+        file = new File(path);
         br = new BufferedReader(new FileReader(file));
 
         addFileData();
@@ -40,10 +45,5 @@ public class FileManager {
 
     public ArrayList<String> getFileData() {
         return fileData;
-    }
-
-    public void setPath(String newPath) {
-        file = new File(newPath);
-
     }
 }
