@@ -2,6 +2,7 @@ package UI;
 
 import BL.*;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -56,6 +57,7 @@ public class MainView extends JFrame {
                 // Clear query + results
                 clearQuery();
                 clearResults();
+                txtQuery.setText("Search");
             }
             if (e.getSource().equals(eMenuItem)) {
                 System.exit(0);
@@ -85,6 +87,9 @@ public class MainView extends JFrame {
     MouseAdapter clickListener = new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
+            if (e.getSource() == txtQuery){
+                txtQuery.setText("");
+            }
         }
     };
 
@@ -107,19 +112,24 @@ public class MainView extends JFrame {
         init();
         this.setSize(500, 400);
         this.setResizable(false);
+        
         this.setTitle("Word Search Tool");
         main = getBorderLayout();
         this.add(main);
         this.setJMenuBar(menubar);
+        
 
     }
 
     private void init() {
         ///////  TEXT FIELDS  ///////
         txtQuery = new javax.swing.JTextField();
+        txtQuery.setText("Search");
+        
         searchBarSize = new Dimension(260, 25);
         txtQuery.setPreferredSize(searchBarSize);
         txtQuery.addKeyListener(queryListener);
+        txtQuery.addMouseListener(clickListener);
         ////////////////////////////
 
         /////////  BUTTONS  /////////
@@ -156,6 +166,7 @@ public class MainView extends JFrame {
         //////// CHECK BOXES ////////
         cbtnOp1 = new javax.swing.JCheckBox("Case sensitive");
         cbtnOp2 = new javax.swing.JCheckBox("Instant search");
+        cbtnOp2.setSelected(true);
         /////////////////////////////
 
         /////// COMBO BOXES ////////
@@ -164,8 +175,8 @@ public class MainView extends JFrame {
         ////////////////////////////
 
         //////////  LABELS  //////////
-        lblSearch = new javax.swing.JLabel("Search:");
-        lblResults = new javax.swing.JLabel("Results");
+        //lblSearch = new javax.swing.JLabel("Search:");
+        //lblResults = new javax.swing.JLabel("Results");
         lblCount = new javax.swing.JLabel("Count: " + lstResults.getModel().getSize());
         //////////////////////////////
 
@@ -195,7 +206,8 @@ public class MainView extends JFrame {
     private JPanel getBorderLayout() {
         JPanel l = new JPanel();
         l.setLayout(new BorderLayout());
-
+        l.setBackground(Color.DARK_GRAY);
+        
         l.add(getNorthLayout(), BorderLayout.NORTH);
         l.add(getSouthLayout(), BorderLayout.SOUTH);
         l.add(getEastLayout(), BorderLayout.EAST);
@@ -205,6 +217,7 @@ public class MainView extends JFrame {
 
     private JPanel getEastLayout() {
         JPanel l = new JPanel();
+        l.setBackground(Color.DARK_GRAY);
         l.setLayout(new GridLayout(3, 1));
         l.add(getTypePanel());
         l.add(getStylePanel());
@@ -214,8 +227,9 @@ public class MainView extends JFrame {
 
     private JPanel getNorthLayout() {
         JPanel l = new JPanel();
+        l.setBackground(Color.DARK_GRAY);
         l.setLayout(new FlowLayout(FlowLayout.LEFT));
-        l.add(lblSearch);
+        //l.add(lblSearch);
         l.add(txtQuery);
         l.add(btnSearch);
         l.add(btnClear);
@@ -224,10 +238,11 @@ public class MainView extends JFrame {
 
     private JPanel getWestLayout() {
         JPanel l = new JPanel();
+        l.setBackground(Color.DARK_GRAY);
         FlowLayout layout = new FlowLayout();
         layout.setAlignOnBaseline(true);
         l.setLayout(layout);
-        l.add(lblResults);
+        //l.add(lblResults);
         l.add(scpList);
         return l;
     }
@@ -241,6 +256,7 @@ public class MainView extends JFrame {
 
     private JPanel getTypePanel() {
         JPanel l = new JPanel();
+        l.setBackground(Color.DARK_GRAY);
         l.setLayout(new GridLayout(4, 1));
         l.setBorder(BorderFactory.createTitledBorder(null, "Type", TitledBorder.CENTER, TitledBorder.CENTER));
         l.add(rbtnOp1);
@@ -252,6 +268,8 @@ public class MainView extends JFrame {
 
     private JPanel getStylePanel() {
         JPanel l = new JPanel();
+        
+        l.setBackground(Color.DARK_GRAY);
         l.setLayout(new GridLayout(4, 1));
         l.setBorder(BorderFactory.createTitledBorder(null, "Style", TitledBorder.CENTER, TitledBorder.CENTER));
         l.add(cbtnOp1);
@@ -261,6 +279,7 @@ public class MainView extends JFrame {
 
     private JPanel getLimitationPanel() {
         JPanel l = new JPanel();
+        l.setBackground(Color.DARK_GRAY);
         l.setBorder(BorderFactory.createTitledBorder(null, "Limitations", TitledBorder.CENTER, TitledBorder.CENTER));
         l.add(cbbxLimits);
         return l;
