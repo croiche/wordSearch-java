@@ -11,7 +11,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
@@ -21,7 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicOptionPaneUI;
-import sun.awt.HorizBagLayout;
 
 /**
  *
@@ -31,7 +29,7 @@ public class MainView extends JFrame {
 
     private JPanel main;
     private MainEngine me;
-    private javax.swing.JButton btnSearch, btnClose, btnClear;
+    private javax.swing.JButton btnSearch, btnClear;
     private javax.swing.JLabel lblSearch, lblResults, lblCount;
     private javax.swing.JTextField txtQuery;
     private javax.swing.JScrollPane scpList;
@@ -40,8 +38,12 @@ public class MainView extends JFrame {
     private javax.swing.ButtonGroup rbtnGroup;
     private javax.swing.JCheckBox cbtnOp1, cbtnOp2;
     private javax.swing.JComboBox cbbxLimits;
+    private javax.swing.JMenuBar menubar;
+    private javax.swing.JMenu file;
+    private javax.swing.JMenuItem eMenuItem, oMenuItem;
     private Dimension searchBarSize, buttonSize, listSize;
     private FileChooser fc;
+    
     private ActionListener buttonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -53,7 +55,7 @@ public class MainView extends JFrame {
                 clearQuery();
                 clearResults();
             }
-            if (e.getSource().equals(btnClose)) {
+            if ( e.getSource().equals(eMenuItem)) {
                 System.exit(0);
             }
         }
@@ -106,6 +108,8 @@ public class MainView extends JFrame {
         this.setTitle("Word Search Tool");
         main = getBorderLayout();
         this.add(main);
+        this.setJMenuBar(menubar);
+
     }
 
     private void init() {
@@ -120,13 +124,10 @@ public class MainView extends JFrame {
         buttonSize = new Dimension(75, 25);
         btnSearch = new javax.swing.JButton("Search");
         btnClear = new javax.swing.JButton("Clear");
-        btnClose = new javax.swing.JButton("Close");
         btnSearch.setPreferredSize(buttonSize);
         btnClear.setPreferredSize(buttonSize);
-        btnClose.setPreferredSize(buttonSize);
         btnSearch.addActionListener(buttonListener);
         btnClear.addActionListener(buttonListener);
-        btnClose.addActionListener(buttonListener);
         /////////////////////////////
 
         ////// LIST COMPONENTS //////
@@ -166,7 +167,22 @@ public class MainView extends JFrame {
         lblCount = new javax.swing.JLabel("Count: " + lstResults.getModel().getSize());
         //////////////////////////////
 
+        //////////  MENU  //////////
+        menubar = new javax.swing.JMenuBar();
+        file = new javax.swing.JMenu("File");
+        file.setMnemonic(KeyEvent.VK_F);
+        oMenuItem = new javax.swing.JMenuItem("Open");
+        oMenuItem.setMnemonic(KeyEvent.VK_O);
+        oMenuItem.setToolTipText("Open file");
+        fc = new FileChooser(oMenuItem);
+        eMenuItem = new javax.swing.JMenuItem("Exit");
+        eMenuItem.setMnemonic(KeyEvent.VK_C);
+        eMenuItem.setToolTipText("Exit application");
+        eMenuItem.addActionListener(buttonListener);
+        file.add(oMenuItem);
+        file.add(eMenuItem);
 
+        menubar.add(file);  
     }
 
     private JPanel getBorderLayout() {
@@ -213,7 +229,6 @@ public class MainView extends JFrame {
         JPanel l = new JPanel();
         l.setLayout(new BasicOptionPaneUI.ButtonAreaLayout(true, 230));
         l.add(lblCount);
-        l.add(btnClose);
         return l;
     }
 

@@ -49,4 +49,8 @@ public class MainEngine {
         }
         return tempAL;
     }
+    
+    public void setPath(String newPath) {
+       fm.setPath(newPath);
+    }
 }
