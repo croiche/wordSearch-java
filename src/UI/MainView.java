@@ -124,9 +124,9 @@ public class MainView extends JFrame {
 
         /////// RADIO BUTTONS ///////
         rbtnGroup = new javax.swing.ButtonGroup();
-        rbtnOp1 = new javax.swing.JRadioButton("Begins with");
-        rbtnOp2 = new javax.swing.JRadioButton("Contains");
-        rbtnOp3 = new javax.swing.JRadioButton("Ends with");
+        rbtnOp1 = new javax.swing.JRadioButton("Contains");
+        rbtnOp2 = new javax.swing.JRadioButton("Begins With");
+        rbtnOp3 = new javax.swing.JRadioButton("Ends With");
         rbtnOp4 = new javax.swing.JRadioButton("Exact");
         rbtnGroup.add(rbtnOp1);
         rbtnGroup.add(rbtnOp2);
@@ -232,10 +232,10 @@ public class MainView extends JFrame {
 
     private IAccept getSearchType() {
         if (rbtnOp1.isSelected()) {
-            return new StartsWith();
+            return new Contains();
         }
         if (rbtnOp2.isSelected()) {
-            return new Contains();
+            return new StartsWith();
         }
         if (rbtnOp3.isSelected()) {
             return new EndsWith();
