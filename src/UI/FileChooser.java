@@ -4,7 +4,7 @@
  */
 package UI;
 
-import BL.MainEngine;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -23,9 +23,12 @@ public class FileChooser extends JFrame {
 
     private String path;
     private JFrame frame;
+    private MainView mv;
+    
     
 
-    public FileChooser(JMenuItem item) {
+    public FileChooser(MainView mv, JMenuItem item) {
+        this.mv = mv;
         item.addActionListener(new OpenClass());
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,7 +46,13 @@ public class FileChooser extends JFrame {
 
             int option = chooser.showOpenDialog(frame);
             if (option == JFileChooser.APPROVE_OPTION) {
-                path = chooser.getSelectedFile().getPath();               
+                path = chooser.getSelectedFile().getPath();
+                try {
+                    mv.updateSearchFile(path);
+                } catch (IOException ex) {
+                    Logger.getLogger(FileChooser.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               
 
             }
         }
@@ -63,7 +72,4 @@ public class FileChooser extends JFrame {
         }
     }
 
-    public String getPath() {
-        return path;
-    }
 }

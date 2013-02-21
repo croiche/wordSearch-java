@@ -45,25 +45,19 @@ public class MainView extends JFrame {
     private javax.swing.JMenuItem eMenuItem, oMenuItem;
     private Dimension searchBarSize, buttonSize, listSize;
     private FileChooser fc;
-    
     private String path;
-    
     private ActionListener buttonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(btnSearch)) {
-                try {
-                    startSearch();
-                } catch (IOException ex) {
-                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                startSearch();
             }
             if (e.getSource().equals(btnClear)) {
                 // Clear query + results
                 clearQuery();
                 clearResults();
             }
-            if ( e.getSource().equals(eMenuItem)) {
+            if (e.getSource().equals(eMenuItem)) {
                 System.exit(0);
             }
         }
@@ -72,11 +66,7 @@ public class MainView extends JFrame {
         @Override
         public void keyReleased(KeyEvent e) {
             if (getInstantSearch() && txtQuery.getText().length() >= 3) {
-                try {
-                    startSearch();
-                } catch (IOException ex) {
-                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                startSearch();
             }
         }
 
@@ -84,11 +74,7 @@ public class MainView extends JFrame {
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_ENTER) {
-                try {
-                    startSearch();
-                } catch (IOException ex) {
-                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                startSearch();
                 e.consume();
             }
             if (key == KeyEvent.VK_BACK_SPACE) {
@@ -190,7 +176,7 @@ public class MainView extends JFrame {
         oMenuItem = new javax.swing.JMenuItem("Open");
         oMenuItem.setMnemonic(KeyEvent.VK_O);
         oMenuItem.setToolTipText("Open file");
-        fc = new FileChooser(oMenuItem);
+        fc = new FileChooser(this, oMenuItem);
         eMenuItem = new javax.swing.JMenuItem("Exit");
         eMenuItem.setMnemonic(KeyEvent.VK_C);
         eMenuItem.setToolTipText("Exit application");
@@ -198,11 +184,9 @@ public class MainView extends JFrame {
         file.add(oMenuItem);
         file.add(eMenuItem);
 
-        menubar.add(file); 
-        
-        path = fc.getPath();
+        menubar.add(file);
         try {
-            me = new MainEngine(path);
+            me = new MainEngine();
         } catch (IOException ex) {
             Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -343,8 +327,8 @@ public class MainView extends JFrame {
         return 0;
     }
 
-    private void startSearch() throws IOException {       
-        
+    private void startSearch() {
+
         ArrayList<String> search;
         search = me.search(txtQuery.getText(), getSearchType(), getCaseSensitive(), getLimitation());
         DefaultListModel model = new DefaultListModel();
@@ -357,5 +341,9 @@ public class MainView extends JFrame {
 
     private int intValueOfObject(Object o) {
         return Integer.parseInt((String) o);
+    }
+
+    public void updateSearchFile(String path) throws IOException {
+        me = new MainEngine(path);
     }
 }

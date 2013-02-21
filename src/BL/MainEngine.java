@@ -20,8 +20,10 @@ public class MainEngine {
 
     public MainEngine(String path) throws IOException {
         fm = new FileManager(path);
-
-    }    
+    } 
+    public MainEngine() throws IOException {
+        fm = new FileManager();
+    }
 
     public int totalHitsAvailable() {
         return fm.getFileData().size();
@@ -50,7 +52,4 @@ public class MainEngine {
         return tempAL;
     }
     
-    public void setFile(String newPath) throws IOException {
-       fm = new FileManager(newPath);
-    }
 }
