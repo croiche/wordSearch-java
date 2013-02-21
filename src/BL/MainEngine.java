@@ -18,10 +18,10 @@ public class MainEngine {
 
     private FileManager fm;
 
-    public MainEngine() throws IOException {
-        fm = new FileManager();
+    public MainEngine(String path) throws IOException {
+        fm = new FileManager(path);
 
-    }
+    }    
 
     public int totalHitsAvailable() {
         return fm.getFileData().size();

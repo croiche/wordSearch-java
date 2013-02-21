@@ -22,7 +22,7 @@ public class FileManager {
     private ArrayList<String> fileData;
 
     public FileManager() throws IOException {
-        file = new File("");
+        file = new File("brit-a-z.txt");
         br = new BufferedReader(new FileReader(file));
 
         addFileData();

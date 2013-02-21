@@ -13,6 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -44,11 +46,17 @@ public class MainView extends JFrame {
     private Dimension searchBarSize, buttonSize, listSize;
     private FileChooser fc;
     
+    private String path;
+    
     private ActionListener buttonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(btnSearch)) {
-                startSearch();
+                try {
+                    startSearch();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             if (e.getSource().equals(btnClear)) {
                 // Clear query + results
@@ -64,7 +72,11 @@ public class MainView extends JFrame {
         @Override
         public void keyReleased(KeyEvent e) {
             if (getInstantSearch() && txtQuery.getText().length() >= 3) {
-                startSearch();
+                try {
+                    startSearch();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 
@@ -72,7 +84,11 @@ public class MainView extends JFrame {
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_ENTER) {
-                startSearch();
+                try {
+                    startSearch();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 e.consume();
             }
             if (key == KeyEvent.VK_BACK_SPACE) {
@@ -182,7 +198,14 @@ public class MainView extends JFrame {
         file.add(oMenuItem);
         file.add(eMenuItem);
 
-        menubar.add(file);  
+        menubar.add(file); 
+        
+        path = fc.getPath();
+        try {
+            me = new MainEngine(path);
+        } catch (IOException ex) {
+            Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private JPanel getBorderLayout() {
@@ -320,13 +343,8 @@ public class MainView extends JFrame {
         return 0;
     }
 
-    private void startSearch() {
-        try {
-            me = new MainEngine();
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(MainView.this, "Error", "File not found!", JOptionPane.ERROR_MESSAGE);
-
-        }
+    private void startSearch() throws IOException {       
+        
         ArrayList<String> search;
         search = me.search(txtQuery.getText(), getSearchType(), getCaseSensitive(), getLimitation());
         DefaultListModel model = new DefaultListModel();

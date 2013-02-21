@@ -19,26 +19,21 @@ import javax.swing.JMenuItem;
  *
  * @author Martin
  */
-public class FileChooser extends JFrame{
+public class FileChooser extends JFrame {
 
-    private String path;    
+    private String path;
     private JFrame frame;
-    private MainEngine me;
+    
 
     public FileChooser(JMenuItem item) {
         item.addActionListener(new OpenClass());
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        try {
-            me = new MainEngine();
-        } catch (IOException ex) {
-        }
+        
     }
-    
-    
 
     class OpenClass implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser chooser = new JFileChooser();
@@ -48,26 +43,23 @@ public class FileChooser extends JFrame{
 
             int option = chooser.showOpenDialog(frame);
             if (option == JFileChooser.APPROVE_OPTION) {
-                try { 
-                    me.setFile(chooser.getSelectedFile().getPath());
-                } catch (IOException ex) {
-                    Logger.getLogger(FileChooser.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                path = chooser.getSelectedFile().getPath();               
+
             }
         }
-    }
 
-    class MyCustomFilter extends javax.swing.filechooser.FileFilter {
+        class MyCustomFilter extends javax.swing.filechooser.FileFilter {
 
-        @Override
-        public boolean accept(File file) {
-            // Allow only directories, or files with ".txt" extension
-            return file.isDirectory() || file.getAbsolutePath().endsWith(".txt");
-        }
+            @Override
+            public boolean accept(File file) {
+                // Allow only directories, or files with ".txt" extension
+                return file.isDirectory() || file.getAbsolutePath().endsWith(".txt");
+            }
 
-        @Override
-        public String getDescription() {
-            return "Text documents (*.txt)";
+            @Override
+            public String getDescription() {
+                return "Text documents (*.txt)";
+            }
         }
     }
 
