@@ -6,7 +6,6 @@ package DAL;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,9 +19,10 @@ public class FileManager {
     private File file;
     private BufferedReader br;
     private ArrayList<String> fileData;
-
+    private String defaultFilePath = "res/brit-a-z.txt";
+    
     public FileManager() throws IOException {
-        file = new File("brit-a-z.txt");
+        file = new File(defaultFilePath);
         br = new BufferedReader(new FileReader(file));
 
         addFileData();

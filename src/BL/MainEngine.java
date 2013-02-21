@@ -5,8 +5,6 @@
 package BL;
 
 import DAL.FileManager;
-import com.sun.xml.internal.ws.util.StringUtils;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -32,7 +30,7 @@ public class MainEngine {
 
     public ArrayList<String> search(String query, IAccept ia, boolean caseSensitive, int limit) {
         ArrayList<String> tempAL = new ArrayList<>();
-        String tempHit = "";
+        String tempHit;
         for (String hit : fm.getFileData()) {
             tempHit = hit;
             if (!caseSensitive) {

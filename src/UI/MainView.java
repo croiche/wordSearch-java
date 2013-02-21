@@ -14,8 +14,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -24,18 +22,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
 
 /**
  *
  * @author Martin, Anthony
  */
 public class MainView extends JFrame {
-
+    
     private JPanel main;
     private MainEngine me;
     private javax.swing.JButton btnSearch, btnClear;
-    private javax.swing.JLabel lblSearch, lblResults, lblCount;
+    private javax.swing.JLabel lblCount;
     private javax.swing.JTextField txtQuery;
     private javax.swing.JScrollPane scpList;
     private javax.swing.JList lstResults;
@@ -43,12 +40,10 @@ public class MainView extends JFrame {
     private javax.swing.ButtonGroup rbtnGroup;
     private javax.swing.JCheckBox cbtnOp1, cbtnOp2;
     private javax.swing.JComboBox cbbxLimits;
-    private javax.swing.JMenuBar menubar;
-    private javax.swing.JMenu file;
-    private javax.swing.JMenuItem eMenuItem, oMenuItem;
-    private Dimension searchBarSize, buttonSize, listSize;
-    private FileChooser fc;
-    private String path;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem exitMenuItem, openMenuItem;
+    private Dimension searchBarSize, buttonSize, listSize, statusBarSize;
     private ActionListener buttonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -56,12 +51,12 @@ public class MainView extends JFrame {
                 startSearch();
             }
             if (e.getSource().equals(btnClear)) {
-                // Clear query + results
                 clearQuery();
                 clearResults();
-                txtQuery.setText("Search");
+                btnClear.setEnabled(false);
+                btnSearch.setEnabled(false);
             }
-            if (e.getSource().equals(eMenuItem)) {
+            if (e.getSource().equals(exitMenuItem)) {
                 System.exit(0);
             }
         }
@@ -69,19 +64,25 @@ public class MainView extends JFrame {
     KeyAdapter queryListener = new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent e) {
-            if (getInstantSearch() && txtQuery.getText().length() >= 3) {
+            if (getInstantSearch() && txtQuery.getText().length() >= 3 && btnSearch.isEnabled()) {
                 startSearch();
             }
+            if (txtQuery.getText().length() > 0) {
+                btnSearch.setEnabled(true);
+                btnClear.setEnabled(true);
+            } else {
+                btnSearch.setEnabled(false);
+            }
         }
-
+        
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
-            if (key == KeyEvent.VK_ENTER) {
+            if (key == KeyEvent.VK_ENTER && btnSearch.isEnabled()) {
                 startSearch();
                 e.consume();
             }
-            if (key == KeyEvent.VK_BACK_SPACE) {
+            if (key == KeyEvent.VK_BACK_SPACE && btnClear.isEnabled()) {
                 clearResults();
             }
         }
@@ -89,12 +90,12 @@ public class MainView extends JFrame {
     MouseAdapter clickListener = new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (e.getSource() == txtQuery){
+            if (e.getSource() == txtQuery) {
                 txtQuery.setText("");
             }
         }
     };
-
+    
     public MainView() {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -112,47 +113,53 @@ public class MainView extends JFrame {
         }
         //</editor-fold>
         init();
-        this.setSize(430, 400);
-        this.setResizable(false);
-        
-        this.setTitle("Word Search Tool");
         main = getBorderLayout();
         this.add(main);
-        this.setJMenuBar(menubar);
-        
-
+        this.setJMenuBar(menuBar);
     }
-
+    
     private void init() {
-        ///////  TEXT FIELDS  ///////
+        try {
+            me = new MainEngine();
+        } catch (IOException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        ///////// DIMENSIONS /////////
+        searchBarSize = new Dimension(260, 25);
+        buttonSize = new Dimension(75, 25);
+        listSize = new Dimension(260, 315);
+        statusBarSize = new Dimension(this.getWidth(), 16);
+        //////////////////////////////
+
+        ////////  TEXT FIELDS  ///////
         txtQuery = new javax.swing.JTextField();
         txtQuery.setText("Search");
-        
-        searchBarSize = new Dimension(260, 25);
+        txtQuery.setToolTipText("Enter your search query here");
         txtQuery.setPreferredSize(searchBarSize);
         txtQuery.addKeyListener(queryListener);
         txtQuery.addMouseListener(clickListener);
-        ////////////////////////////
+        //////////////////////////////
 
-        /////////  BUTTONS  /////////
-        buttonSize = new Dimension(75, 25);
+        //////////  BUTTONS  /////////
         btnSearch = new javax.swing.JButton("Search");
         btnClear = new javax.swing.JButton("Clear");
         btnSearch.setPreferredSize(buttonSize);
         btnClear.setPreferredSize(buttonSize);
         btnSearch.addActionListener(buttonListener);
+        btnSearch.setEnabled(false);
         btnClear.addActionListener(buttonListener);
-        /////////////////////////////
+        btnClear.setEnabled(false);
+        //////////////////////////////
 
-        ////// LIST COMPONENTS //////
-        listSize = new Dimension(260, 315);
+        /////// LIST COMPONENTS //////
         scpList = new javax.swing.JScrollPane();
         lstResults = new javax.swing.JList();
         scpList.setViewportView(lstResults);
         scpList.setPreferredSize(listSize);
-        /////////////////////////////
+        //////////////////////////////
 
-        /////// RADIO BUTTONS ///////
+        //////// RADIO BUTTONS ///////
         rbtnGroup = new javax.swing.ButtonGroup();
         rbtnOp1 = new javax.swing.JRadioButton("Contains");
         rbtnOp2 = new javax.swing.JRadioButton("Begins With");
@@ -163,49 +170,42 @@ public class MainView extends JFrame {
         rbtnGroup.add(rbtnOp3);
         rbtnGroup.add(rbtnOp4);
         rbtnOp1.setSelected(true);
-        /////////////////////////////
+        //////////////////////////////
 
-        //////// CHECK BOXES ////////
+        ///////// CHECK BOXES ////////
         cbtnOp1 = new javax.swing.JCheckBox("Case sensitive");
         cbtnOp2 = new javax.swing.JCheckBox("Instant search");
         cbtnOp2.setSelected(true);
-        /////////////////////////////
-
-        /////// COMBO BOXES ////////
-        cbbxLimits = new javax.swing.JComboBox();
-        cbbxLimits.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"None", "50", "100", "250", "500"}));
-        ////////////////////////////
-
-        //////////  LABELS  //////////
-        //lblSearch = new javax.swing.JLabel("Search:");
-        //lblResults = new javax.swing.JLabel("Results");
-        lblCount = new javax.swing.JLabel("Count: " + lstResults.getModel().getSize());
-        lblCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         //////////////////////////////
 
-        //////////  MENU  //////////
-        menubar = new javax.swing.JMenuBar();
-        file = new javax.swing.JMenu("File");
-        file.setMnemonic(KeyEvent.VK_F);
-        oMenuItem = new javax.swing.JMenuItem("Open");
-        oMenuItem.setMnemonic(KeyEvent.VK_O);
-        oMenuItem.setToolTipText("Open file");
-        fc = new FileChooser(this, oMenuItem);
-        eMenuItem = new javax.swing.JMenuItem("Exit");
-        eMenuItem.setMnemonic(KeyEvent.VK_C);
-        eMenuItem.setToolTipText("Exit application");
-        eMenuItem.addActionListener(buttonListener);
-        file.add(oMenuItem);
-        file.add(eMenuItem);
+        //////// COMBO BOXES /////////
+        cbbxLimits = new javax.swing.JComboBox();
+        cbbxLimits.setModel(new javax.swing.DefaultComboBoxModel(
+                new String[]{"None", "50", "100", "250", "500"}));
+        //////////////////////////////
 
-        menubar.add(file);
-        try {
-            me = new MainEngine();
-        } catch (IOException ex) {
-            Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //////////  LABELS  //////////
+        lblCount = new javax.swing.JLabel("Count: " + lstResults.getModel().getSize());
+        //////////////////////////////
+
+        ///////////  MENU  ///////////
+        menuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+        openMenuItem = new javax.swing.JMenuItem("Open");
+        exitMenuItem = new javax.swing.JMenuItem("Exit");
+        openMenuItem.setMnemonic(KeyEvent.VK_O);
+        exitMenuItem.setMnemonic(KeyEvent.VK_C);
+        openMenuItem.setToolTipText("Open file");
+        exitMenuItem.setToolTipText("Exit application");
+        exitMenuItem.addActionListener(buttonListener);
+        fileMenu.add(openMenuItem);
+        fileMenu.add(exitMenuItem);
+        menuBar.add(fileMenu);
+        new FileChooser(this, openMenuItem);        
+        //////////////////////////////
     }
-
+    
     private JPanel getBorderLayout() {
         JPanel l = new JPanel();
         l.setLayout(new BorderLayout());
@@ -217,7 +217,8 @@ public class MainView extends JFrame {
         l.add(getWestLayout(), BorderLayout.WEST);
         return l;
     }
-
+    
+    //////////////////////////////
     private JPanel getEastLayout() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
@@ -227,7 +228,7 @@ public class MainView extends JFrame {
         l.add(getLimitationPanel());
         return l;
     }
-
+    
     private JPanel getNorthLayout() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
@@ -238,7 +239,7 @@ public class MainView extends JFrame {
         l.add(btnClear);
         return l;
     }
-
+    
     private JPanel getWestLayout() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
@@ -249,16 +250,18 @@ public class MainView extends JFrame {
         l.add(scpList);
         return l;
     }
-
+    
     private JPanel getSouthLayout() {
         JPanel l = new JPanel();
         l.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        l.setPreferredSize(new Dimension(this.getWidth(), 16));
+        l.setPreferredSize(statusBarSize);
         l.setLayout(new BoxLayout(l, BoxLayout.X_AXIS));
         l.add(lblCount);
         return l;
     }
-
+    //////////////////////////////
+    
+    //////////////////////////////
     private JPanel getTypePanel() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
@@ -270,7 +273,7 @@ public class MainView extends JFrame {
         l.add(rbtnOp4);
         return l;
     }
-
+    
     private JPanel getStylePanel() {
         JPanel l = new JPanel();
         
@@ -281,7 +284,7 @@ public class MainView extends JFrame {
         l.add(cbtnOp2);
         return l;
     }
-
+    
     private JPanel getLimitationPanel() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
@@ -289,17 +292,21 @@ public class MainView extends JFrame {
         l.add(cbbxLimits);
         return l;
     }
-
+    //////////////////////////////
+    
+    //////////////////////////////
     private void clearQuery() {
         txtQuery.setText("");
     }
-
+    
     private void clearResults() {
         lstResults.setModel(new javax.swing.DefaultListModel());
         lblCount.setText("Count: " + lstResults.getModel().getSize());
-
+        
     }
-
+    //////////////////////////////
+    
+    //////////////////////////////
     private IAccept getSearchType() {
         if (rbtnOp1.isSelected()) {
             return new Contains();
@@ -315,7 +322,7 @@ public class MainView extends JFrame {
         }
         return null;
     }
-
+    
     private boolean getCaseSensitive() {
         if (cbtnOp1.isSelected()) {
             return true;
@@ -323,7 +330,7 @@ public class MainView extends JFrame {
             return false;
         }
     }
-
+    
     private boolean getInstantSearch() {
         if (cbtnOp2.isSelected()) {
             return true;
@@ -331,7 +338,7 @@ public class MainView extends JFrame {
             return false;
         }
     }
-
+    
     private int getLimitation() {
         if (cbbxLimits.getSelectedIndex() == 0) {
             return me.totalHitsAvailable();
@@ -350,9 +357,11 @@ public class MainView extends JFrame {
         }
         return 0;
     }
-
+    //////////////////////////////
+    
+    //////////////////////////////
     private void startSearch() {
-
+        
         ArrayList<String> search;
         search = me.search(txtQuery.getText(), getSearchType(), getCaseSensitive(), getLimitation());
         DefaultListModel model = new DefaultListModel();
@@ -362,12 +371,15 @@ public class MainView extends JFrame {
         lstResults.setModel(model);
         lblCount.setText("Count: " + model.getSize());
     }
-
+    //////////////////////////////
+    
+    //////////////////////////////
     private int intValueOfObject(Object o) {
         return Integer.parseInt((String) o);
     }
-
+    
     public void updateSearchFile(String path) throws IOException {
         me = new MainEngine(path);
     }
+    //////////////////////////////
 }
