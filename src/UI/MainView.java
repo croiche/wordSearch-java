@@ -259,16 +259,16 @@ public class MainView extends JFrame {
             return me.totalHitsAvailable();
         }
         if (cbbxLimits.getSelectedIndex() == 1) {
-            return 50;
+            return intValueOfObject(cbbxLimits.getSelectedItem());
         }
         if (cbbxLimits.getSelectedIndex() == 2) {
-            return 100;
+            return intValueOfObject(cbbxLimits.getSelectedItem());
         }
         if (cbbxLimits.getSelectedIndex() == 3) {
-            return 250;
+            return intValueOfObject(cbbxLimits.getSelectedItem());
         }
         if (cbbxLimits.getSelectedIndex() == 4) {
-            return 500;
+            return intValueOfObject(cbbxLimits.getSelectedItem());
         }
         return 0;
     }
@@ -280,5 +280,10 @@ public class MainView extends JFrame {
         }
         lstResults.setModel(model);
         lblCount.setText("Count: " + model.getSize());
+    }
+    
+    private int intValueOfObject(Object o) {
+        return Integer.parseInt((String) o);
+    
     }
 }
