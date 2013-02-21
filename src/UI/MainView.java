@@ -9,6 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -17,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicOptionPaneUI;
+import sun.awt.HorizBagLayout;
 
 /**
  *
@@ -33,25 +38,20 @@ public class MainView extends JFrame {
     private javax.swing.JList lstResults;
     private javax.swing.JRadioButton rbtnOp1, rbtnOp2, rbtnOp3, rbtnOp4;
     private javax.swing.ButtonGroup rbtnGroup;
-    private javax.swing.JCheckBox cbtnOp1;
+    private javax.swing.JCheckBox cbtnOp1, cbtnOp2;
     private javax.swing.JComboBox cbbxLimits;
     private Dimension searchBarSize, buttonSize, listSize;
+    
     private ActionListener buttonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(btnSearch)) {
-                try {
-                    me = new MainEngine();
-                    // Start the search query
-                    showResults(me.search(txtQuery.getText(), getSearchType(), getCaseSensitive(), getLimitation()));
-                } catch (java.io.IOException ex) {
-                    JOptionPane.showMessageDialog(MainView.this, "Error", "File not found!", JOptionPane.ERROR_MESSAGE);
-                }
-
+                startSearch();
             }
             if (e.getSource().equals(btnClear)) {
                 // Clear query + results
-                clear();
+                clearQuery();
+                clearResults();
             }
             if (e.getSource().equals(btnClose)) {
                 System.exit(0);
@@ -60,13 +60,27 @@ public class MainView extends JFrame {
     };
     KeyAdapter queryListener = new KeyAdapter() {
         @Override
-        public void keyTyped(KeyEvent e) {
-            // We could make it search instantly after every keypress.
+        public void keyReleased(KeyEvent e) {
+            if (getInstantSearch() && txtQuery.getText().length() >= 3) {
+                startSearch();
+            }
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            // We could make it search if we press ENTER.
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_ENTER) {
+                startSearch();
+                e.consume();
+            }
+            if (key == KeyEvent.VK_BACK_SPACE) {
+                clearResults();
+            }
+        }
+    };
+    MouseAdapter clickListener = new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
         }
     };
 
@@ -99,6 +113,7 @@ public class MainView extends JFrame {
         txtQuery = new javax.swing.JTextField();
         searchBarSize = new Dimension(260, 25);
         txtQuery.setPreferredSize(searchBarSize);
+        txtQuery.addKeyListener(queryListener);
         ////////////////////////////
 
         /////////  BUTTONS  /////////
@@ -137,6 +152,7 @@ public class MainView extends JFrame {
 
         //////// CHECK BOXES ////////
         cbtnOp1 = new javax.swing.JCheckBox("Case sensitive");
+        cbtnOp2 = new javax.swing.JCheckBox("Instant search");
         /////////////////////////////
 
         /////// COMBO BOXES ////////
@@ -212,8 +228,10 @@ public class MainView extends JFrame {
 
     private JPanel getStylePanel() {
         JPanel l = new JPanel();
+        l.setLayout(new GridLayout(4, 1));
         l.setBorder(BorderFactory.createTitledBorder(null, "Style", TitledBorder.CENTER, TitledBorder.CENTER));
         l.add(cbtnOp1);
+        l.add(cbtnOp2);
         return l;
     }
 
@@ -224,10 +242,14 @@ public class MainView extends JFrame {
         return l;
     }
 
-    private void clear() {
-        lstResults.setModel(new javax.swing.DefaultListModel());
+    private void clearQuery() {
         txtQuery.setText("");
+    }
+
+    private void clearResults() {
+        lstResults.setModel(new javax.swing.DefaultListModel());
         lblCount.setText("Count: " + lstResults.getModel().getSize());
+
     }
 
     private IAccept getSearchType() {
@@ -253,6 +275,14 @@ public class MainView extends JFrame {
             return false;
         }
     }
+    
+    private boolean getInstantSearch() {
+        if (cbtnOp2.isSelected()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private int getLimitation() {
         if (cbbxLimits.getSelectedIndex() == 0) {
@@ -273,7 +303,15 @@ public class MainView extends JFrame {
         return 0;
     }
 
-    private void showResults(ArrayList<String> search) {
+    private void startSearch() {
+        try {
+            me = new MainEngine();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(MainView.this, "Error", "File not found!", JOptionPane.ERROR_MESSAGE);
+
+        }
+        ArrayList<String> search;
+        search = me.search(txtQuery.getText(), getSearchType(), getCaseSensitive(), getLimitation());
         DefaultListModel model = new DefaultListModel();
         for (String a : search) {
             model.addElement(a);
@@ -281,9 +319,8 @@ public class MainView extends JFrame {
         lstResults.setModel(model);
         lblCount.setText("Count: " + model.getSize());
     }
-    
+
     private int intValueOfObject(Object o) {
         return Integer.parseInt((String) o);
-    
     }
 }
