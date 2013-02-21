@@ -41,7 +41,7 @@ public class MainView extends JFrame {
     private javax.swing.JCheckBox cbtnOp1, cbtnOp2;
     private javax.swing.JComboBox cbbxLimits;
     private Dimension searchBarSize, buttonSize, listSize;
-    
+    private FileChooser fc;
     private ActionListener buttonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -165,6 +165,8 @@ public class MainView extends JFrame {
         lblResults = new javax.swing.JLabel("Results");
         lblCount = new javax.swing.JLabel("Count: " + lstResults.getModel().getSize());
         //////////////////////////////
+
+
     }
 
     private JPanel getBorderLayout() {
@@ -275,7 +277,7 @@ public class MainView extends JFrame {
             return false;
         }
     }
-    
+
     private boolean getInstantSearch() {
         if (cbtnOp2.isSelected()) {
             return true;
