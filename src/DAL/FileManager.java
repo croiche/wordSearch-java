@@ -19,15 +19,15 @@ public class FileManager {
     private File file;
     private BufferedReader br;
     private ArrayList<String> fileData;
-    private String defaultFilePath = "res/brit-a-z.txt";
-    
+    private String defaultFilePath = "res/brit-a-z.txt"; // the pre-loaded file's path
+
     public FileManager() throws IOException {
         file = new File(defaultFilePath);
         br = new BufferedReader(new FileReader(file));
 
         addFileData();
     }
-    
+
     public FileManager(String path) throws IOException {
         file = new File(path);
         br = new BufferedReader(new FileReader(file));
