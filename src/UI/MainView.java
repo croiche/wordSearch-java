@@ -28,7 +28,7 @@ import javax.swing.border.TitledBorder;
  * @author Martin, Anthony
  */
 public class MainView extends JFrame {
-    
+
     private JPanel main;
     private MainEngine me;
     private javax.swing.JButton btnSearch, btnClear;
@@ -44,6 +44,10 @@ public class MainView extends JFrame {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem exitMenuItem, openMenuItem;
     private Dimension searchBarSize, buttonSize, listSize, statusBarSize;
+    /**
+     * ActionListener for the Search and Clear buttons. It also contains the
+     * action for the Exit menu option from the MenuBar.
+     */
     private ActionListener buttonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -61,6 +65,9 @@ public class MainView extends JFrame {
             }
         }
     };
+    /**
+     * KeyListener for the search/query bar.
+     */
     KeyAdapter queryListener = new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent e) {
@@ -74,7 +81,7 @@ public class MainView extends JFrame {
                 btnSearch.setEnabled(false);
             }
         }
-        
+
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
@@ -87,6 +94,9 @@ public class MainView extends JFrame {
             }
         }
     };
+    /**
+     * MouseListener for the click-and-clear feature on the search/query bar.
+     */
     MouseAdapter clickListener = new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -94,8 +104,19 @@ public class MainView extends JFrame {
                 txtQuery.setText("");
             }
         }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            if (e.getSource().equals(txtQuery)) {
+                txtQuery.setFocusable(true);
+            }
+        }
     };
-    
+
+    /**
+     * Constructor for the class. Creates the main panel, initializes the
+     * components and sets the layout and theme of the frame.
+     */
     public MainView() {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -117,8 +138,13 @@ public class MainView extends JFrame {
         this.add(main);
         this.setJMenuBar(menuBar);
     }
-    
+
+    /**
+     * Initializes the components and the business logic. Warning: It's pretty
+     * long. But on the bright side, it's organized at least. :-)
+     */
     private void init() {
+        // If there's a problem with the loaded file, a windows will pop up and warn the user about it.
         try {
             me = new MainEngine();
         } catch (IOException ex) {
@@ -134,7 +160,8 @@ public class MainView extends JFrame {
 
         ////////  TEXT FIELDS  ///////
         txtQuery = new javax.swing.JTextField();
-        txtQuery.setText("Search");
+        txtQuery.setText("Search here...");
+        txtQuery.setFocusable(false);
         txtQuery.setToolTipText("Enter your search query here");
         txtQuery.setPreferredSize(searchBarSize);
         txtQuery.addKeyListener(queryListener);
@@ -202,23 +229,29 @@ public class MainView extends JFrame {
         fileMenu.add(openMenuItem);
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
-        new FileChooser(this, openMenuItem);        
-        //////////////////////////////
+        FileChooser fc = new FileChooser(this, openMenuItem); // Creates the 'Open' window frame and the ActionListener.
     }
-    
+
+    /**
+     * Creates the main JPanel, using the BorderLayout
+     */
     private JPanel getBorderLayout() {
         JPanel l = new JPanel();
         l.setLayout(new BorderLayout());
         l.setBackground(Color.DARK_GRAY);
-        
+
         l.add(getNorthLayout(), BorderLayout.NORTH);
         l.add(getSouthLayout(), BorderLayout.SOUTH);
         l.add(getEastLayout(), BorderLayout.EAST);
         l.add(getWestLayout(), BorderLayout.WEST);
         return l;
     }
-    
+
     //////////////////////////////
+    /**
+     * Creates the panel that contains three another panel, each of them has
+     * different settings on it. A GridLayout is used here.
+     */
     private JPanel getEastLayout() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
@@ -228,29 +261,39 @@ public class MainView extends JFrame {
         l.add(getLimitationPanel());
         return l;
     }
-    
+
+    /**
+     * Creates the panel that contains the search bar and the two buttons. It
+     * uses a simple FlowLayout.
+     */
     private JPanel getNorthLayout() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
         l.setLayout(new FlowLayout(FlowLayout.LEFT));
-        //l.add(lblSearch);
         l.add(txtQuery);
         l.add(btnSearch);
         l.add(btnClear);
         return l;
     }
-    
+
+    /**
+     * Creates a panel that contains the ListBox with the results. It uses a
+     * FlowLayout.
+     */
     private JPanel getWestLayout() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
         FlowLayout layout = new FlowLayout();
         layout.setAlignOnBaseline(true);
         l.setLayout(layout);
-        //l.add(lblResults);
         l.add(scpList);
         return l;
     }
-    
+
+    /**
+     * Creates a panel which is our status bar in the bottom. It contains the
+     * counter and uses BevelBorder and BoxLayout.
+     */
     private JPanel getSouthLayout() {
         JPanel l = new JPanel();
         l.setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -259,9 +302,11 @@ public class MainView extends JFrame {
         l.add(lblCount);
         return l;
     }
+
     //////////////////////////////
-    
-    //////////////////////////////
+    /**
+     * This panel contains the type settings and uses a GridLayout.
+     */
     private JPanel getTypePanel() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
@@ -273,10 +318,13 @@ public class MainView extends JFrame {
         l.add(rbtnOp4);
         return l;
     }
-    
+
+    /**
+     * This panel contains the style options and uses a GridLayout.
+     */
     private JPanel getStylePanel() {
         JPanel l = new JPanel();
-        
+
         l.setBackground(Color.DARK_GRAY);
         l.setLayout(new GridLayout(4, 1));
         l.setBorder(BorderFactory.createTitledBorder(null, "Style", TitledBorder.CENTER, TitledBorder.CENTER));
@@ -284,7 +332,10 @@ public class MainView extends JFrame {
         l.add(cbtnOp2);
         return l;
     }
-    
+
+    /**
+     * This panel contains the style options and uses the default layout.
+     */
     private JPanel getLimitationPanel() {
         JPanel l = new JPanel();
         l.setBackground(Color.DARK_GRAY);
@@ -292,21 +343,31 @@ public class MainView extends JFrame {
         l.add(cbbxLimits);
         return l;
     }
+
     //////////////////////////////
-    
-    //////////////////////////////
+    /**
+     * This method simply clears the search bar.
+     */
     private void clearQuery() {
         txtQuery.setText("");
     }
-    
+
+    /**
+     * This method simply clears the list of results and resets the counter.
+     */
     private void clearResults() {
         lstResults.setModel(new javax.swing.DefaultListModel());
         lblCount.setText("Count: " + lstResults.getModel().getSize());
-        
+
     }
+
     //////////////////////////////
-    
-    //////////////////////////////
+    /**
+     * This method checks which radio button is selected in the type options
+     * pane and returns the appropriate search type class.
+     *
+     * @return Search Type Class
+     */
     private IAccept getSearchType() {
         if (rbtnOp1.isSelected()) {
             return new Contains();
@@ -322,7 +383,13 @@ public class MainView extends JFrame {
         }
         return null;
     }
-    
+
+    /**
+     * This method returns whether the case sensitive CheckBox is selected or
+     * not.
+     *
+     * @return true in case the CheckBox is selected, false otherwise.
+     */
     private boolean getCaseSensitive() {
         if (cbtnOp1.isSelected()) {
             return true;
@@ -330,7 +397,13 @@ public class MainView extends JFrame {
             return false;
         }
     }
-    
+
+    /**
+     * This method returns whether the instant search CheckBox is selected or
+     * not.
+     *
+     * @return true in case the CheckBox is selected, false otherwise.
+     */
     private boolean getInstantSearch() {
         if (cbtnOp2.isSelected()) {
             return true;
@@ -338,7 +411,16 @@ public class MainView extends JFrame {
             return false;
         }
     }
-    
+
+    /**
+     * This method checks what is the selected limitation within the ComboBox.
+     * Also uses the totalHitsAvailable() from the BL and the intValueOfObject()
+     * methods.
+     *
+     * @return the value associated with that specific selection. In case the
+     * default 'None' is selected, it returns the number of all items in our
+     * file.
+     */
     private int getLimitation() {
         if (cbbxLimits.getSelectedIndex() == 0) {
             return me.totalHitsAvailable();
@@ -357,11 +439,14 @@ public class MainView extends JFrame {
         }
         return 0;
     }
+
     //////////////////////////////
-    
-    //////////////////////////////
+    /**
+     * This method does the search, saves the results in a ArrayList and puts
+     * those results inside the list model.
+     */
     private void startSearch() {
-        
+
         ArrayList<String> search;
         search = me.search(txtQuery.getText(), getSearchType(), getCaseSensitive(), getLimitation());
         DefaultListModel model = new DefaultListModel();
@@ -371,15 +456,27 @@ public class MainView extends JFrame {
         lstResults.setModel(model);
         lblCount.setText("Count: " + model.getSize());
     }
+
     //////////////////////////////
-    
-    //////////////////////////////
+    /**
+     * This method takes in an object like a ComboBox object and parses it's
+     * value into a Integer.
+     *
+     * @param o
+     * @return
+     */
     private int intValueOfObject(Object o) {
         return Integer.parseInt((String) o);
     }
-    
+
+    /**
+     * This method updates the path of our file by creating a new MainEngine
+     * (BL) with a special constructor that takes in a path.
+     *
+     * @param path The path of our new file.
+     * @throws IOException It deals with a file in the system.
+     */
     public void updateSearchFile(String path) throws IOException {
         me = new MainEngine(path);
     }
-    //////////////////////////////
 }
