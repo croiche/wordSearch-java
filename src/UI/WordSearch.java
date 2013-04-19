@@ -14,7 +14,7 @@ public class WordSearch {
 
     public static void main(String[] args) {
         JFrame frame = new MainView();
-        frame.setTitle("Word Search Tool for pros");
+        frame.setTitle("Word Search Tool");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(440, 430);
         frame.setResizable(false);
